@@ -21,7 +21,7 @@ class ImageProcessor:
         self.camera_id = rospy.get_param('~camera_id', 0)
         self.cv_msg_topic = rospy.get_param('~cv_msg_topic', '/cv_bundle')
 
-        self.cv_pub = rospy.Publisher(self.cv_msg_topic, CV_msg, queue_size=10)
+        self.cv_pub = rospy.Publisher(self.cv_msg_topic, CV_msg, queue_size=1)
 
         rospack = rospkg.RosPack()
         try:
@@ -41,6 +41,7 @@ class ImageProcessor:
     def image_callback(self, msg):
         try:
             cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, "bgr8")
+            img_h, img_w = cv_image.shape[:2]
             results = self.model(cv_image, verbose=False)
 
             bundle_msg = CV_msg()
@@ -59,10 +60,10 @@ class ImageProcessor:
                         det = Hazmat_Detection()
                         det.content = result.names[int(box.cls[0].item())]
                         
-                        det.bbox.cx = box_data[0]
-                        det.bbox.cy = box_data[1]
-                        det.bbox.width = box_data[2]
-                        det.bbox.height = box_data[3]
+                        det.bbox.cx = box_data[0] / img_w
+                        det.bbox.cy = box_data[1] / img_h
+                        det.bbox.width = box_data[2] / img_w
+                        det.bbox.height = box_data[3] / img_h
                         
                         hazmat_detections.append(det)
 
