@@ -21,7 +21,7 @@ class ImageProcessor:
         self.camera_id = rospy.get_param('~camera_id', 0)
         self.cv_msg_topic = rospy.get_param('~cv_msg_topic', '/cv_bundle')
 
-        self.cv_pub = rospy.Publisher(self.cv_msg_topic, CV_msg, queue_size=1)
+        self.cv_pub = rospy.Publisher(self.cv_msg_topic + "/hazmat", CV_msg, queue_size=1)
 
         rospack = rospkg.RosPack()
         try:
@@ -76,7 +76,7 @@ class ImageProcessor:
             rospy.logerr(f'CvBridge Error: {e}')
 
 def main():
-    rospy.init_node('hazmat_detector_node', anonymous=True)
+    rospy.init_node('cv_hazmat_detector', anonymous=True)
     process = ImageProcessor()
 
     try:

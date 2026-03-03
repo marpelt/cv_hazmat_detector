@@ -17,10 +17,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
-
 catkin_install_python(PROGRAMS scripts/detector.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
